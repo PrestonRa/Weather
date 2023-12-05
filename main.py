@@ -18,6 +18,21 @@ def about(station, date):
             "date": date,
             "temperature": temperature}
 
+@app.route("/api/v1/<station>")
+def all_data(station):
+    filename = "weather_txt/TG_STAID" + str(station).zfill(6) + ".txt"
+    df = pd.read_csv(filename, skiprows=20, parse_dates=["    DATE"])
+    result = df.to_dict(orient="records")
+    return result
+
+@app.route("/api/v1/unique/<station>/<year>")
+def one_date(station, year):
+    filename = "weather_txt/TG_STAID" + str(station).zfill(6) + ".txt"
+    df = pd.read_csv(filename, skiprows=20,)
+    df["    DATE"] = df["    DATE"].astype(str)
+    result = df[df["    DATE"].str.startswith(str(year))].to_dict(orient="records")
+    return result
+
 @app.route("/contact-us")
 def contact_us():
     return render_template("contact_us.html")
